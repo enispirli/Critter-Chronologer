@@ -11,6 +11,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,7 +47,14 @@ public class EmployeeService {
         Set<EmployeeSkill> skills = employeeDTO.getSkills();
 
         List<Employee> employees = employeeRepository.findAllBySkillsInAndDaysAvailableContains(skills, dayOfWeek);
-        return employees.stream().
+
+        List<Employee> result = new ArrayList<>();
+        employees.stream().forEach(employee -> {
+            if(employee.getSkills().containsAll(skills)){
+                result.add(employee);
+            }
+        });
+        return result.stream().
                 map(this::mapModelToDTO)
                 .collect(Collectors.toList());
     }

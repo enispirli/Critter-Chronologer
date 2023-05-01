@@ -3,6 +3,7 @@ package com.udacity.jdnd.course3.critter.service;
 import com.udacity.jdnd.course3.critter.dto.PetDTO;
 import com.udacity.jdnd.course3.critter.model.Customer;
 import com.udacity.jdnd.course3.critter.model.Pet;
+import com.udacity.jdnd.course3.critter.repository.CustomerRepository;
 import com.udacity.jdnd.course3.critter.repository.PetRepository;
 import com.udacity.jdnd.course3.critter.util.FetchModelUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,8 @@ public class PetService {
     private final PetRepository petRepository;
 
     private final FetchModelUtil fetchModelUtil;
+
+    private final CustomerRepository customerRepository;
 
     public PetDTO getPet(Long petId) {
         Pet petModel = fetchModelUtil.getPetModel(petId);
@@ -39,6 +42,9 @@ public class PetService {
         BeanUtils.copyProperties(petDTO, pet);
         pet.setCustomer(customerModel);
         Pet savedPet = petRepository.save(pet);
+
+        customerModel.getPets().add(savedPet);
+        customerRepository.save(customerModel);
         return mapModelToDTO(savedPet);
     }
 

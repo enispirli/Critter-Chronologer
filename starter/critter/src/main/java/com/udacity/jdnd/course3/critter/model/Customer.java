@@ -3,6 +3,7 @@ package com.udacity.jdnd.course3.critter.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,6 +23,6 @@ public class Customer {
     private String notes;
 
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
-    private List<Pet> pets;
+    private List<Pet> pets = new ArrayList<>();
 
 }

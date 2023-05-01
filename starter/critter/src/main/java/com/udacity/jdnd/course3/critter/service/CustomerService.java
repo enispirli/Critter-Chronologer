@@ -8,6 +8,7 @@ import com.udacity.jdnd.course3.critter.repository.PetRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,17 +38,21 @@ public class CustomerService {
 
     public CustomerDTO saveCustomer(CustomerDTO customerDTO) {
 
-        List<Pet> pets = new ArrayList<>();
-
-        customerDTO.getPetIds().forEach(petId -> {
-            Optional<Pet> petWrapper = petRepository.findById(petId);
-            if (petWrapper.isPresent()) {
-                pets.add(petWrapper.get());
-            }
-        });
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDTO, customer);
-        customer.setPets(pets);
+
+        if (!CollectionUtils.isEmpty(customerDTO.getPetIds())) {
+            List<Pet> pets = new ArrayList<>();
+
+            customerDTO.getPetIds().forEach(petId -> {
+                Optional<Pet> petWrapper = petRepository.findById(petId);
+                if (petWrapper.isPresent()) {
+                    pets.add(petWrapper.get());
+                }
+            });
+            customer.setPets(pets);
+        }
+
         Customer savedCustomer = customerRepository.save(customer);
         return mapModelToDTO(savedCustomer);
     }
@@ -55,9 +60,12 @@ public class CustomerService {
     private CustomerDTO mapModelToDTO(Customer c) {
         CustomerDTO dto = new CustomerDTO();
         BeanUtils.copyProperties(c, dto);
-        c.getPets().forEach(pet -> {
-            dto.getPetIds().add(pet.getId());
-        });
+        if (!CollectionUtils.isEmpty(c.getPets())) {
+            dto.setPetIds(new ArrayList<>());
+            c.getPets().forEach(pet -> {
+                dto.getPetIds().add(pet.getId());
+            });
+        }
         return dto;
     }
 
