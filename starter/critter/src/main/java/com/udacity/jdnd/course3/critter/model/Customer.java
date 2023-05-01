@@ -21,7 +21,7 @@ public class Customer {
 
     private String notes;
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
     private List<Pet> pets;
 
 }
