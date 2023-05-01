@@ -23,8 +23,7 @@ public class Pet {
     @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "fk_customer_id"))
     private Customer customer;
 
-    @Column(name = "birth_date")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "birth_date", columnDefinition = "DATE")
     private LocalDate birthDate;
 
     private String notes;

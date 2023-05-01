@@ -40,7 +40,7 @@ public class Schedule {
     )
     private List<Pet> pets;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "DATE")
     private LocalDate date;
 
     @ElementCollection
